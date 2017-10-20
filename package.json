@@ -2,9 +2,11 @@
     "name": "advpl-unit-test",
     "displayName": "Advpl Unit Test",
     "description": "Suporte a teste unitario em ADVPL e VsCode",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "publisher": "KillerAll",
-    "extensionDependencies":["KillerAll.advpl-vscode"],
+    "extensionDependencies": [
+        "KillerAll.advpl-vscode"
+    ],
     "engines": {
         "vscode": "^1.14.0"
     },
@@ -17,18 +19,20 @@
     ],
     "main": "./out/src/extension",
     "contributes": {
-        "commands": [{
+        "commands": [
+            {
                 "command": "advpl.unittest.run",
                 "title": "Advpl Unit Test - Run - Run current TestCase"
-            }]
-            ,
+            }
+        ],
         "keybindings": [
             {
                 "command": "advpl.unittest.run",
                 "key": "ctrl+f12",
                 "mac": "cmd+f12",
                 "when": "editorLangId == advpl"
-            }]
+            }
+        ]
     },
     "scripts": {
         "vscode:prepublish": "tsc -p ./",
@@ -42,8 +46,7 @@
         "mocha": "^2.3.3",
         "@types/node": "^6.0.40",
         "@types/mocha": "^2.2.32"
-    }
-    ,
+    },
     "repository": {
         "type": "git",
         "url": "https://github.com/ragssoftwares/advpl-unit-test"
