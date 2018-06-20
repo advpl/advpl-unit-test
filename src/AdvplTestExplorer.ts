@@ -18,7 +18,8 @@ export class AdvplTestExplorer implements TreeDataProvider<TestNode> {
 
     constructor(private context: vscode.ExtensionContext, private testCommands: TestCommands) {
         testCommands.onNewTestDiscovery(this.updateWithDiscoveredTests, this);
-        testCommands.onTestRun(this.updateTreeWithRunningTests, this);
+        testCommands.onTestRun(this.updateTreeWithRunningTest, this);
+        testCommands.onFolderTestRun(this.updateTreeWithRunningFolderTests, this);
         testCommands.onNewResult(this.addTestResults, this);
     }
 
@@ -78,9 +79,17 @@ export class AdvplTestExplorer implements TreeDataProvider<TestNode> {
         this._onDidChangeTreeData.fire();
     }
 
-    private updateTreeWithRunningTests(testName: string) {
+    private updateTreeWithRunningTest(testName: string) {
         const testRun = this.allNodes.filter( (testNode: TestNode) => !testNode.isFolder && testNode.fullName.startsWith(testName) );
+        this.updateTreeWithRunningTests(testRun);
 
+    }
+
+    private updateTreeWithRunningFolderTests(folder: string){
+        this.updateTreeWithRunningTests(this.allNodes);
+    }
+
+    private updateTreeWithRunningTests(testRun: TestNode[]){
         testRun.forEach( (testNode: TestNode) => {
             testNode.setAsLoading();
             this._onDidChangeTreeData.fire(testNode);

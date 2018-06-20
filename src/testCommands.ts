@@ -8,14 +8,14 @@ import { TestResult } from "./TestResult";
 export class TestCommands {
     private onNewTestDiscoveryEmitter = new EventEmitter<string[]>();
     private onTestRunEmitter = new EventEmitter<string>();
+    private onFolderTestRunEmmitter = new EventEmitter<string>();
     private onNewResultEmitter = new EventEmitter<TestResult[]>();
     private lastRunTestName: string = null;
 
     constructor() {}
 
     public runAllTests(): void {
-        throw new Error("Not implemented")
-        //this.runTestCommand("");
+        this.runTestCommand("");
     }
 
     public runTest(test: TestNode): void {
@@ -34,6 +34,7 @@ export class TestCommands {
 
     public discoverTests() {
         let testDirectoryPath = vscode.workspace.getConfiguration("advpl-unittest").get<string>("testDirectoryPath")
+        if (!testDirectoryPath) throw new Error("advpl-unittest.testDirectoryPath not configured");
         discoverTests(testDirectoryPath)
             .then((result) => {
 
@@ -58,37 +59,37 @@ export class TestCommands {
         return this.onNewResultEmitter.event;
     }
 
+    public get onFolderTestRun(): Event<string> {
+        return this.onFolderTestRunEmmitter.event;
+    }
+
     private runTestCommand(testName: string): void {
         var runner  = new AdvplRunner(JSON.stringify(vscode.workspace.getConfiguration("advpl")));
         runner.setAfterExec(() => {
             let res = runner.getResult();
             if (!res){
-                res = new TestResult();
-                res.classname = testName;
+                //se está pela folder não gera
+                if(testName){
+                    res = new Array<TestResult>()
+                    res.push(new TestResult());
+                    res[0].classname = testName;
+                }
+            }else{
+                if (! (res instanceof Array) ) res = [res]
             }
-            
-            this.onNewResultEmitter.fire([res]);
+
+            if (res) this.onNewResultEmitter.fire(res);
         }); 
-        runner.runUnitTest(testName);
-        this.lastRunTestName = testName;
-        this.onTestRunEmitter.fire(testName);
+        if(!testName){
+            let folder = vscode.workspace.getConfiguration("advpl-unittest").get<string>("testDirectoryPath");
+            runner.runFolderTest(folder);
+            this.onFolderTestRunEmmitter.fire(folder);
+        }else{
+            runner.runUnitTest(testName);
+            this.lastRunTestName = testName;
+            this.onTestRunEmitter.fire(testName);
+        }
 
-    }
-
-
-
-
-    /**
-     * @description
-     * Gets the dotnet test argument to speicfy the output for the test results.
-     */
-    private outputTestResults(): string {
-        // if (Utility.codeLensEnabled) {
-        //     //return " --logger \"trx;LogFileName=" + this.resultsFile.fileName + "\"";
-        // } else {
-        //     return "";
-        // }
-        return '';
     }
 
 }
