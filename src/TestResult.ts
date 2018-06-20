@@ -2,12 +2,15 @@ export class TestResult {
     public testcasecount: string;
     public result: string;
     public suites: Array<TestSuite>;
+    public classname: string;
+    public methods: Array<any>;
 
     public static Failed:string = "Failed";
     public static Passed:string = "Passed";
 
     constructor() {
         this.suites = new Array<TestSuite>();
+        this.methods = new Array<any>();
     }
 
 

@@ -4,10 +4,10 @@
 import * as vscode from 'vscode';
 
 import {AdvplUnitTest} from './AdvplUnitTest';
-import {AdvplRunner} from './AdvplRunner';
 import * as analyse from '../src/CodeAnalyser';
-import * as jsresult from '../src/TestResult';
-import * as path from 'path';
+import { AdvplTestExplorer } from './AdvplTestExplorer';
+import { TestCommands } from './testCommands';
+import { TestNode } from './TestNode';
 let advplExt = vscode.extensions.getExtension('KillerAll.advpl-vscode');
 let consoleAdvpl = advplExt.exports
 let oTdd;
@@ -16,12 +16,30 @@ let bfinish;
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
-     const unitTest = AdvplUnitTest.getInstance();
+    const unitTest = AdvplUnitTest.getInstance();
     oTdd = new TddBusiness();
     unitTest.activate();
+
+    
+    const testCommands = new TestCommands();
+    const advplTestExplorer = new AdvplTestExplorer(context, testCommands);
+    vscode.window.registerTreeDataProvider("advplTestExplorer", advplTestExplorer);
+    context.subscriptions.push(vscode.commands.registerCommand("advpl-unittest.runTest", (test: TestNode) => {
+        testCommands.runTest(test);
+    }));
+    
     context.subscriptions.push(unitTest);
-    context.subscriptions.push(runUnitTest());
+    context.subscriptions.push(runUnitTest(testCommands));
+
+    context.subscriptions.push(vscode.commands.registerCommand("advpl-unittest.refreshTestExplorer", () => {
+        advplTestExplorer.refreshTestExplorer();
+    }));
+    
+    context.subscriptions.push(vscode.commands.registerCommand("advpl-unittest.runAllTests", () => {
+        testCommands.runAllTests();
+    }));
     consoleAdvpl.writeAdvplConsole("Advpl Unit test initiated!")
+
 
 }
 
@@ -29,7 +47,7 @@ export function activate(context: vscode.ExtensionContext) {
 export function deactivate() {
 }
 
-function runUnitTest()
+function runUnitTest(testCommands: TestCommands)
 {
    
 let disposable = vscode.commands.registerCommand('advpl.unittest.run', function (context)  {
@@ -46,7 +64,7 @@ let disposable = vscode.commands.registerCommand('advpl.unittest.run', function 
             {
                 editor.document.save().then(function(select)
                 {
-                __internal_run(cSource,editor);
+                __internal_run(cSource,editor,testCommands);
                 }
             )
                
@@ -61,7 +79,7 @@ let disposable = vscode.commands.registerCommand('advpl.unittest.run', function 
         }
         else
         {
-            __internal_run(cSource,editor);
+            __internal_run(cSource,editor,testCommands);
         }
        
 
@@ -72,7 +90,7 @@ function isFinish()
 {
     return bfinish;
 }
-function __internal_run(cSource,editor)
+function __internal_run(cSource,editor,testCommands: TestCommands)
 {
         bfinish = false;
         
@@ -100,22 +118,20 @@ function __internal_run(cSource,editor)
             });
         });
     
-    var runner  = new AdvplRunner(JSON.stringify(vscode.workspace.getConfiguration("advpl")));        
-        runner.setAfterExec(function (){
-            let res = runner.getResult();
-            if (res != null)
-            {
-                oTdd.showTestResults(res);        
-            }
-            consoleAdvpl.writeAdvplConsole("[Advpl Unit Test] - Finalizado");
-            bfinish = true;
-        });        
         consoleAdvpl.writeAdvplConsole("-------------------------------------------------------");
         consoleAdvpl.writeAdvplConsole("----ADVPL Unit Test Running----------------------------");
         consoleAdvpl.writeAdvplConsole("-------------------------------------------------------");        
         consoleAdvpl.writeAdvplConsole("[Advpl Unit Test] - Iniciando a execução do TestCase:" +  cSource.replace(/^.*[\\\/]/, ''));
-        runner.runUnitTest(cSource);
-       
+        
+        testCommands.onNewResult((res) => {
+            if (res != null)
+            {
+                oTdd.showTestResults(res[0]);        
+            }
+            consoleAdvpl.writeAdvplConsole("[Advpl Unit Test] - Finalizado");
+            bfinish = true;
+        })
+        testCommands.runTestByName(cSource);   
     
 }
 
