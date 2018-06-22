@@ -21,8 +21,28 @@
     "contributes": {
         "commands": [
             {
+                "command": "advpl-unittest.refreshTestExplorer",
+                "title": "Refresh",
+                "icon": {
+                    "light": "resources/light/refresh.svg",
+                    "dark": "resources/dark/refresh.svg"
+                }
+            },
+            {
                 "command": "advpl.unittest.run",
                 "title": "Advpl Unit Test - Run - Run current TestCase"
+            },
+            {
+                "command": "advpl-unittest.runTest",
+                "title": "Run Advpl Unit Test"
+            },
+            {
+                "command": "advpl-unittest.runAllTests",
+                "title": "Run all Advpl Unit Test",
+                "icon": {
+                    "light": "resources/light/run.png",
+                    "dark": "resources/dark/run.png"
+               }
             }
         ],
         "keybindings": [
@@ -32,7 +52,50 @@
                 "mac": "cmd+f12",
                 "when": "editorLangId == advpl"
             }
-        ]
+        ],
+        "views": {
+            "test": [
+                {
+                "id": "advplTestExplorer",
+                "name": "Advpl Test Explorer"
+                }
+            ]
+        },
+        "menus": {
+            "view/title": [
+                {
+                "command": "advpl-unittest.refreshTestExplorer",
+                "when": "view == advplTestExplorer",
+                "group": "navigation@1"
+                },
+                {
+                "command": "advpl-unittest.runAllTests",
+                "when": "view == advplTestExplorer",
+                "group": "navigation@0"
+                }
+            ],
+            "view/item/context": [
+                {
+                "command": "advpl-unittest.runTest",
+                "when": "view == advplTestExplorer",
+                "group": "advplTestExplorer@0"
+                },
+                {
+                "command": "advpl-unittest.runTest",
+                "when": "view == advplTestExplorer",
+                "group": "inline"
+                }
+            ]
+        },
+        "configuration":{
+            "title": "AdvPL Test Explorer",
+            "properties": {
+                "advpl-unittest.testDirectoryPath" :{
+                    "type": "string",
+                    "description": "Folder with advpl unit tests"
+                }
+            }
+        }
     },
     "scripts": {
         "vscode:prepublish": "tsc -p ./",

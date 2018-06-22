@@ -68,6 +68,47 @@ export class AdvplRunner {
         
     }
 
+    public runFolderTest(folder :string )
+    {
+        var _args = new Array<string>();
+        var that = this;        
+        _args.push("--compileInfo=" + this.EnvInfos);
+        _args.push("--testrunfolder="+folder);
+        
+        var child = child_process.spawn(this.debugPath,_args);
+        child.stdout.on("data",function(data){
+            console.log("DATA STDOUT")
+           that._result += data+"";
+        });
+
+        child.stdout.on("end",() => console.log("END STDOUT"))
+        
+        child.on("exit",function(data){            
+            var lRunned = data == 0   
+            console.log("EXIT CHILD")         
+            if(lRunned)            
+            {
+                console.log("exit: " + data);
+                console.log("exit: " +that._result);
+                
+                try{
+                    var obj = JSON.parse(that._result);
+                    that.process_result(obj);
+                }
+                catch (ex)
+                {
+                 console.log("parse error")   ;
+                }
+                
+            }
+            
+            that.afterExec();
+           //that.outChannel.log("ID:"+that._lastAppreMsg);
+            //vscode.window.showInformationMessage("ID:"+that._lastAppreMsg);
+           
+        });        
+        
+    }
     public process_result(obj)
     {
         var nMetodos = obj.methods;

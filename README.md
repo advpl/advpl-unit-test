@@ -14,3 +14,7 @@ Por favor favor leia a documentação de como criar os testes unitarios.
 ## Teclas de Atalho padrões
 
 * CTRL + F12 - Executa o teste unitario do fonte atual. Deve estar com um fonte de Teste Unitario aberto.
+
+
+## Crédito
+Essa extensão foi feita com base na extensão [vscode-dotnet-test-explorer](https://github.com/formulahendry/vscode-dotnet-test-explorer)  
