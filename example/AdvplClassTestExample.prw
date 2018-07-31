@@ -24,6 +24,7 @@ Class AdvplClassTestExample From FWDefaultTestCase
     Method MEqual()
     Method MNotEqual()
     Method MError()
+    Method MSkip()
 EndClass
 
 //-------------------------------------------------------------------
@@ -42,10 +43,11 @@ Method AdvplClassTestExample() Class AdvplClassTestExample
 	_Super:FWDefaultTestCase()
 
     //Adição dos métodos de teste
-	Self:AddTestMethod( "MTrue"     ,, "AssertTrue"      )
-    Self:AddTestMethod( "MFalse"    ,, "AssertFalse"     )
+	Self:AddTestMethod( "MTrue"     ,, "AssertTrue"     )
+    Self:AddTestMethod( "MFalse"    ,, "AssertFalse"    )
     Self:AddTestMethod( "MEqual"    ,, "AssertEqual"    )
     Self:AddTestMethod( "MNotEqual" ,, "AssertNotEqual" )
+    Self:AddTestMethod( "MSkip"     ,, "Skip"           )
 
     //Adição de método de teste que espera um error.log
     Self:AddTestMethod( "MError" , .T. , "AssertNotEquals" )
@@ -186,6 +188,24 @@ Local oResult As Object
 oResult := FWTestResult():FWTestResult()
 
 oResult:AssertNotEqual( 'X' , 'T' )
+
+Return oResult
+
+//-------------------------------------------------------------------
+/*/{Protheus.doc} MSkip
+Método que de teste que deixa de ser executado
+
+@author Daniel Mendes
+@since Jul 31, 2018
+@version 12
+/*/
+//-------------------------------------------------------------------
+Method MSkip() Class AdvplClassTestExample
+Local oResult As Object
+
+oResult := FWTestResult():FWTestResult()
+
+oResult:Skip()
 
 Return oResult
 
