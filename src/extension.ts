@@ -138,11 +138,17 @@ function __internal_run(cSource,editor,testCommands: TestCommands)
 export class TddBusiness {
     private _failedDecorator: vscode.TextEditorDecorationType;
     private _passedDecorator: vscode.TextEditorDecorationType;
+    private _skipedDecorator: vscode.TextEditorDecorationType;
 
     //public static nunitResultsFilePath: string = path.join(vscode.workspace.rootPath, 'TestResult.xml');
 
 
     constructor() {
+        this._skipedDecorator = vscode.window.createTextEditorDecorationType({
+            cursor: 'crosshair',
+            backgroundColor: 'rgba(255,255,0,0.3)'
+        });
+
         this._failedDecorator = vscode.window.createTextEditorDecorationType({
             cursor: 'crosshair',
             backgroundColor: 'rgba(255,0,0,0.3)'
@@ -162,8 +168,10 @@ export class TddBusiness {
             {
                 var analyser = new analyse.CodeAnalyser();
                 //consoleAdvpl.writeAdvplConsole
-                var decoratorsFailed = analyser.getDecorationOptions(tests.methods, currentDocument, "failed",false,consoleAdvpl);
-                var decoratorsPassed = analyser.getDecorationOptions(tests.methods, currentDocument, "passed",true,consoleAdvpl);
+                var decoratorsSkiped = analyser.getDecorationOptions(tests.methods, currentDocument, "skiped",null,consoleAdvpl,true);
+                var decoratorsFailed = analyser.getDecorationOptions(tests.methods, currentDocument, "failed",false,consoleAdvpl,false);
+                var decoratorsPassed = analyser.getDecorationOptions(tests.methods, currentDocument, "passed",true,consoleAdvpl,false);
+                texteditor.setDecorations(this._skipedDecorator, decoratorsSkiped);
                 texteditor.setDecorations(this._failedDecorator, decoratorsFailed);
                 texteditor.setDecorations(this._passedDecorator, decoratorsPassed);
             }
@@ -192,6 +200,7 @@ export class TddBusiness {
         });*/
     }
      private cleanUpPreviousResults(texteditor:vscode.TextEditor) {
+        texteditor.setDecorations(this._skipedDecorator, []);
         texteditor.setDecorations(this._failedDecorator, []);
         texteditor.setDecorations(this._passedDecorator, []);
     }
