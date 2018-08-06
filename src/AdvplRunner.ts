@@ -12,17 +12,27 @@ export class AdvplRunner {
 
     constructor(jSonInfos : string )
     {
-        
+        let isAlpha: boolean = vscode.workspace.getConfiguration("advpl").get<boolean>("alpha_compile");
         this.EnvInfos = jSonInfos;
         this.debugPath = vscode.extensions.getExtension("KillerAll.advpl-vscode").extensionPath;
         this._result = "";
-        if(process.platform == "darwin")
+        if(process.platform == "win32")
         {
-            this.debugPath += "/bin/AdvplDebugBridgeMac";
+            if(isAlpha) {
+                this.debugPath += "\\bin\\alpha\\win\\AdvplDebugBridgeC.exe";
+            }
+            else {
+                this.debugPath += "\\bin\\AdvplDebugBridge.exe";
+            }
         }
         else
-        {   
-            this.debugPath += "\\bin\\AdvplDebugBridge.exe";
+        {
+            if(process.platform == "darwin") {
+                this.debugPath += "/bin/alpha/mac/AdvplDebugBridgeC";
+            }
+            else {
+                this.debugPath += "/bin/alpha/linux/AdvplDebugBridgeC";
+            }
         }
              
         
