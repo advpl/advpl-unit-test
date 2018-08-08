@@ -168,7 +168,7 @@ export class TddBusiness {
             {
                 var analyser = new analyse.CodeAnalyser();
                 //consoleAdvpl.writeAdvplConsole
-                var decoratorsSkiped = analyser.getDecorationOptions(tests.methods, currentDocument, "skiped",null,consoleAdvpl,true);
+                var decoratorsSkiped = analyser.getDecorationOptions(tests.methods, currentDocument, "skipped",null,consoleAdvpl,true);
                 var decoratorsFailed = analyser.getDecorationOptions(tests.methods, currentDocument, "failed",false,consoleAdvpl,false);
                 var decoratorsPassed = analyser.getDecorationOptions(tests.methods, currentDocument, "passed",true,consoleAdvpl,false);
                 texteditor.setDecorations(this._skipedDecorator, decoratorsSkiped);
