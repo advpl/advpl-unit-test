@@ -24,6 +24,7 @@ public getDecorationOptions(methods, document:vscode.TextDocument,hoverHint:stri
     
     for (var index = 0; index < methods.length; index++)
     {
+        //When the test is skipped, its status is equal to success.
         if(onlySkip)
         {
             if (methods[index].skiped)
@@ -34,7 +35,7 @@ public getDecorationOptions(methods, document:vscode.TextDocument,hoverHint:stri
         }
         else
         {
-            if (methods[index].success == success)
+            if (methods[index].success == success && !methods[index].skiped)
             {
                 advplExt.writeAdvplConsole("[Advpl Unit Test] Method " + methods[index].methodname +  (success ? " success!":(" FAILED!" + " Message:" +methods[index].message) ));
                 exp += methods[index].methodname + "|";
