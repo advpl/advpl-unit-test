@@ -1,4 +1,5 @@
 import { TestResult } from "./testResult";
+import { statusImages } from "./constants";
 
 export class TestNode {
     private _isError: boolean;
@@ -54,7 +55,12 @@ export class TestNode {
         if (testResult.length > 0){            
             let resultForTest = testResult[0].methods.filter(m => m.methodname == this.name);
             if (resultForTest.length > 0){
-                this._icon = resultForTest[0].success ? "testPassed.png" : "testFailed.png";
+                if(resultForTest[0].skiped) {
+                    this._icon = statusImages.SKIPPED
+                }
+                else { 
+                    this._icon = resultForTest[0].success ? statusImages.PASSED : statusImages.FAILED;
+                }
             }
         }
     }

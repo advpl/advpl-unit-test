@@ -1,7 +1,18 @@
 
 import { getMessage, Status, Report } from './util';
 
+export const advplExtensions = {
+    PRW: '.prw',
+    PRX: '.prx',
+    PRG: '.prg',
+    TLPP: '.tlpp'
+}
 
+export const statusImages = {
+    SKIPPED : 'testSkipped.png',
+    PASSED : 'testPassed.png',
+    FAILED : 'testFailed.png'
+}
 
 export const config = 
 {
