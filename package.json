@@ -8,7 +8,7 @@
         "KillerAll.advpl-vscode"
     ],
     "engines": {
-        "vscode": "^1.14.0"
+        "vscode": "^1.27.2"
     },
     "categories": [
         "Other"
@@ -42,7 +42,15 @@
                 "icon": {
                     "light": "resources/light/run.png",
                     "dark": "resources/dark/run.png"
-               }
+                }
+            },
+            {
+                "command": "advpl.unittest.showCoverage",
+                "title": "Advpl Unit Test - Show coverage on file."
+            },
+            {
+                "command": "advpl-unittest.removeCoverage",
+                "title": "Advpl Unit Test - Remove coverage on file."
             }
         ],
         "keybindings": [
@@ -56,41 +64,41 @@
         "views": {
             "test": [
                 {
-                "id": "advplTestExplorer",
-                "name": "Advpl Test Explorer"
+                    "id": "advplTestExplorer",
+                    "name": "Advpl Test Explorer"
                 }
             ]
         },
         "menus": {
             "view/title": [
                 {
-                "command": "advpl-unittest.refreshTestExplorer",
-                "when": "view == advplTestExplorer",
-                "group": "navigation@1"
+                    "command": "advpl-unittest.refreshTestExplorer",
+                    "when": "view == advplTestExplorer",
+                    "group": "navigation@1"
                 },
                 {
-                "command": "advpl-unittest.runAllTests",
-                "when": "view == advplTestExplorer",
-                "group": "navigation@0"
+                    "command": "advpl-unittest.runAllTests",
+                    "when": "view == advplTestExplorer",
+                    "group": "navigation@0"
                 }
             ],
             "view/item/context": [
                 {
-                "command": "advpl-unittest.runTest",
-                "when": "view == advplTestExplorer",
-                "group": "advplTestExplorer@0"
+                    "command": "advpl-unittest.runTest",
+                    "when": "view == advplTestExplorer",
+                    "group": "advplTestExplorer@0"
                 },
                 {
-                "command": "advpl-unittest.runTest",
-                "when": "view == advplTestExplorer",
-                "group": "inline"
+                    "command": "advpl-unittest.runTest",
+                    "when": "view == advplTestExplorer",
+                    "group": "inline"
                 }
             ]
         },
-        "configuration":{
+        "configuration": {
             "title": "AdvPL Test Explorer",
             "properties": {
-                "advpl-unittest.testDirectoryPath" :{
+                "advpl-unittest.testDirectoryPath": {
                     "type": "string",
                     "description": "Folder with advpl unit tests"
                 }
@@ -104,11 +112,11 @@
         "test": "node ./node_modules/vscode/bin/test"
     },
     "devDependencies": {
+        "@types/mocha": "^2.2.32",
+        "@types/node": "^6.0.117",
+        "mocha": "^5.2.0",
         "typescript": "^2.0.3",
-        "vscode": "^1.0.0",
-        "mocha": "^2.3.3",
-        "@types/node": "^6.0.40",
-        "@types/mocha": "^2.2.32"
+        "vscode": "^1.1.21"
     },
     "repository": {
         "type": "git",
@@ -116,5 +124,8 @@
     },
     "bugs": {
         "url": "https://github.com/ragssoftwares/advpl-unit-test/issues"
+    },
+    "dependencies": {
+        "npm": "^6.4.1"
     }
 }
