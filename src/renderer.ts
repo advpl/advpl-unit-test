@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import {Config}  from './config';
+//import {Config}  from './config';
 import {Line, LCov} from "coverage";
 
 
@@ -7,74 +7,50 @@ import {Line, LCov} from "coverage";
 
 
 export class RendererCoverage {
-    private configStore: Config;
-    private lcov: LCov;
+    //private configStore: Config;
+    private lnDw: LinesToDraw;
     private decorator :Decorators;
-    constructor( lcov:LCov) {
-        this.lcov = lcov;
+    private textEditor:vscode.TextEditor;
+    constructor(textEditor:vscode.TextEditor, lnDw: LinesToDraw) {
+        this.textEditor = textEditor;
+        this.lnDw = lnDw;
         this.decorator = new Decorators();
     }
 
-    public drawCoverage():boolean {
-        let found:boolean = false;
-        let textEditors = vscode.window.visibleTextEditors;
-        
-        for( let textEditor of textEditors) {
-            // Remove all decorations first to prevent graphical issues
-            
-            const doc = textEditor.document;
-
-            if ("advpl" === doc.languageId ) {
-
-                for (const tn of this.lcov.TNs) {
-                    if (doc.fileName === tn.SF) {
-                        found = true;
-                        this.clearDecorators(textEditor);
-                        this.setDecorationsForEditor(textEditor, tn.lines);
-                    }
-                }
-            }
-        }
-        return found;
+    public draw() {
+        this.clearDecorators();
+        this.setDecorationsForEditor();
     }
 
-    private clearDecorators(editor:vscode.TextEditor){
-        editor.setDecorations(
+    private clearDecorators(){
+        this.textEditor.setDecorations(
             this.decorator.getCovered(),
             []
         );
-        editor.setDecorations(
+        this.textEditor.setDecorations(
             this.decorator.getLineTocover(),
             []
         );
     }
     
 
-    public removeDecorationsForEditor(textEditor:vscode.TextEditor = null) {
+    public removeDecorationsForEditor() {
  
         this.decorator.decoratorReset();
       
     }
 
-    private setDecorationsForEditor( editor: vscode.TextEditor, lines: Array<Line>) {
+    private setDecorationsForEditor() {
         
-        const lnDw = new LinesToDraw(lines);
-        
-        editor.setDecorations(
+        this.textEditor.setDecorations(
             this.decorator.getCovered(),
-            lnDw.covered
+            this.lnDw.covered
         );
-        editor.setDecorations(
+        this.textEditor.setDecorations(
             this.decorator.getLineTocover(),
-            lnDw.noCovered
+            this.lnDw.noCovered
         );
-/*         editor.setDecorations(
-            this.decorator.getCovered(),
-            lnDw.partial
-        ); */
-    }
-    
-    
+    }    
 }
 
 class Decorators {
@@ -119,7 +95,7 @@ class Decorators {
     }
 }
 
-class LinesToDraw {
+export class LinesToDraw {
     covered: vscode.Range[];
     partial: vscode.Range[];
     noCovered: vscode.Range[];
@@ -144,3 +120,27 @@ class LinesToDraw {
         }
     }
 }
+
+/*     public drawCoverage():boolean {
+        let found:boolean = false;
+        let textEditors = vscode.window.visibleTextEditors;
+        
+        for( let textEditor of textEditors) {
+            // Remove all decorations first to prevent graphical issues
+            
+            const doc = textEditor.document;
+            const filePath: string  = doc.uri.fsPath;
+
+            if ("advpl" === doc.languageId ) {
+                
+                for (let tn of this.lcov.TNs) {
+                    if (tn.SF === filePath) {
+                        found = true;
+                        this.clearDecorators(textEditor);
+                        this.setDecorationsForEditor(textEditor, tn.lines);
+                    }               
+                }
+            }
+        }
+        return found;
+    } */

@@ -93,12 +93,7 @@ export class TestCommands {
 
 
             if(lcov != null){
-                lcov = this.getRelativePath(lcov)
                 this.onNewCoverageEmitter.fire(lcov);
-                //const renderer = new RendererCoverage(lcov);
-                //for(const file of lcov.TNs){
-                   //this.createWatcher(file.SF, renderer);
-                //}
             }
             
         }); 
@@ -111,75 +106,7 @@ export class TestCommands {
             this.lastRunTestName = testName;
             this.onTestRunEmitter.fire(testName);
         }
-
-    }
-
-    private createWatcher(file:string, renderer:RendererCoverage){
-        let pattern = path.join(file);
-        let rakePromise: Thenable<vscode.Task[]> | undefined = undefined;
-        let fileWatcher = vscode.workspace.createFileSystemWatcher(pattern);
-        fileWatcher.onDidChange(
-            (filePath) => {
-                renderer.drawCoverage();  
-            }
-        );
-        fileWatcher.onDidCreate(() => rakePromise = undefined);
-        fileWatcher.onDidDelete(() => rakePromise = undefined);
-        
-    }
-
-    private getRelativePath(lcov: LCov) {
-        const re = new RegExp(/\w+.PRW/g);
-        let matches;
-
-        for( const tn of lcov.TNs){
-            
-           tn.SF = this.getRelativePathInWorkspace((vscode.workspace.rootPath + "\\src\\"), tn.SF);
-            
-        }
-
-        return lcov;
-    }
-
-    private getRelativePathInWorkspace(dir: string, fileName: string) {
-        const files = fs.readdirSync(dir);
-        let str: string = fileName;
-        for (const file of files) {
-            const dirStt: fs.Stats = fs.lstatSync((dir + file));
-            if (dirStt === null) {
-                return "";
-            }
-            if (dirStt.isDirectory()) {
-                str = this.getRelativePathInWorkspace( (dir + file + "\\"), fileName);
-                if ( str !== fileName) {
-                    return str;
-                }
-            }
-            if (file.toUpperCase() === fileName) {
-                return (dir + file);
-            }
-        }
-        return str;
-    }
-
-    private replaceCurrentFilePath(textEditors: vscode.TextEditor[], lcov: LCov){   
-
-        for( const textDocument of vscode.workspace.textDocuments ) {
-            const re = new RegExp(/(\w+.PR[X,W,Y])/g);
-            const filePath: string  = textDocument.uri.fsPath; 
-            let matches = re.exec(textDocument.fileName.toUpperCase());
-            if  (matches !== null) {
-                for (let file of lcov.TNs) {
-                    if (file.SF === matches[0]) {
-                        file.SF = filePath;
-                    }               
-                }
-            }
-        }
-        return lcov;
-    }
-
-    
+    }    
 }
 
 
