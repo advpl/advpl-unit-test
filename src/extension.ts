@@ -8,21 +8,34 @@ import * as analyse from '../src/CodeAnalyser';
 import { AdvplTestExplorer } from './AdvplTestExplorer';
 import { TestCommands } from './testCommands';
 import { TestNode } from './TestNode';
+import { CoverageAgent } from './coverageAgent';
+
+
 let advplExt = vscode.extensions.getExtension('KillerAll.advpl-vscode');
 let consoleAdvpl = advplExt.exports
 let oTdd;
 let bfinish;
+let coverageAgent:CoverageAgent;
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
+
+
+
+
+   
+    
+
+
 export function activate(context: vscode.ExtensionContext) {
 
     const unitTest = AdvplUnitTest.getInstance();
     oTdd = new TddBusiness();
     unitTest.activate();
-
-    
+   
     const testCommands = new TestCommands();
     const advplTestExplorer = new AdvplTestExplorer(context, testCommands);
+    coverageAgent = new CoverageAgent(context);
+
     vscode.window.registerTreeDataProvider("advplTestExplorer", advplTestExplorer);
     context.subscriptions.push(vscode.commands.registerCommand("advpl-unittest.runTest", (test: TestNode) => {
         testCommands.runTest(test);
@@ -39,8 +52,6 @@ export function activate(context: vscode.ExtensionContext) {
         testCommands.runAllTests();
     }));
     consoleAdvpl.writeAdvplConsole("Advpl Unit test initiated!")
-
-
 }
 
 // this method is called when your extension is deactivated
@@ -57,23 +68,24 @@ let disposable = vscode.commands.registerCommand('advpl.unittest.run', function 
         if (editor.document.isDirty)
         {
             let list = ["Sim","Não"];
-            vscode.window.showQuickPick(list,{placeHolder:"O arquivo não está salvo e foi modificado, deseja salva-lo antes de compilar?"}).then(function(select){
-            console.log(select);
-            
-            if (select==="Sim")
-            {
-                editor.document.save().then(function(select)
+            vscode.window.showQuickPick(list,{placeHolder:"O arquivo não está salvo e foi modificado, deseja salva-lo antes de compilar?"})
+            .then(function(select){
+                console.log(select);
+                
+                if (select==="Sim")
                 {
-                __internal_run(cSource,editor,testCommands);
+                    editor.document.save().then(function(select)
+                    {
+                    __internal_run(cSource,editor,testCommands);
+                    }
+                )
+                
                 }
-            )
-               
-            }
-            else
-            {
-                vscode.window.setStatusBarMessage('Ação cancelado pelo usuario, fonte não compilado!!!',5000);
-            }
-        })
+                else
+                {
+                    vscode.window.setStatusBarMessage('Ação cancelado pelo usuario, fonte não compilado!!!',5000);
+                }
+            });
             
             
         }
@@ -126,11 +138,17 @@ function __internal_run(cSource,editor,testCommands: TestCommands)
         testCommands.onNewResult((res) => {
             if (res != null)
             {
-                oTdd.showTestResults(res[0]);        
+                oTdd.showTestResults(res[0]);       
             }
             consoleAdvpl.writeAdvplConsole("[Advpl Unit Test] - Finalizado");
             bfinish = true;
-        })
+        });
+
+        testCommands.onNewCoverage((lcov) => {
+                coverageAgent.newLCov = lcov;
+                coverageAgent.activeAgent();
+            }
+        );
         testCommands.runTestByName(cSource);   
     
 }
@@ -203,5 +221,7 @@ export class TddBusiness {
         texteditor.setDecorations(this._skipedDecorator, []);
         texteditor.setDecorations(this._failedDecorator, []);
         texteditor.setDecorations(this._passedDecorator, []);
-    }
+    }  
 }
+
+

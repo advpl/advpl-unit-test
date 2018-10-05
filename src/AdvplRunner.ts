@@ -2,6 +2,8 @@ import * as child_process from 'child_process';
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
+import {LCov} from "coverage";
+
 export class AdvplRunner {
     private EnvInfos :string;
     private debugPath : string;
@@ -9,6 +11,7 @@ export class AdvplRunner {
     public _result : string;
     private afterExec;    
     private testResult;    
+    private lcov: LCov;
 
     constructor(jSonInfos : string )
     {
@@ -57,7 +60,7 @@ export class AdvplRunner {
             if(lRunned)            
             {
                 console.log("exit: " + data);
-                console.log("exit: " +that._result);
+                console.log("exit: " + that._result);
                 
                 try{
                     var obj = JSON.parse(that._result);
@@ -99,7 +102,7 @@ export class AdvplRunner {
             if(lRunned)            
             {
                 console.log("exit: " + data);
-                console.log("exit: " +that._result);
+                console.log("exit: " + that._result);
                 
                 try{
                     var obj = JSON.parse(that._result);
@@ -122,8 +125,14 @@ export class AdvplRunner {
     public process_result(obj)
     {
         var nMetodos = obj.methods;
-        this.testResult = obj;
-        console.log("process_result");        
+        this.testResult = obj.tests;
+        this.lcov = <LCov> obj.lcov;
+        console.log(obj.lcov);
+        console.log("process_result");
+    }
+
+    public getCoverage() :LCov {
+        return this.lcov;
     }
     public getResult()
     {

@@ -66,7 +66,7 @@ export class AdvplTestExplorer implements TreeDataProvider<TestNode> {
             }else{
                 return new TestNode("", test, this.testResults);
             }
-        })
+        });
         /*if (!false) {
             vscode.window.showInformationMessage('No dependency in empty workspace');
             return Promise.resolve([]);
