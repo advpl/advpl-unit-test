@@ -2,7 +2,7 @@
     "name": "advpl-unit-test",
     "displayName": "Advpl Unit Test",
     "description": "Suporte a teste unitario em ADVPL e VsCode",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "publisher": "KillerAll",
     "extensionDependencies": [
         "KillerAll.advpl-vscode"

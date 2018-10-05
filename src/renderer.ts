@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import {Config}  from './config';
+//import {Config}  from './config';
 import {Line, LCov} from "coverage";
 
 
@@ -7,7 +7,7 @@ import {Line, LCov} from "coverage";
 
 
 export class RendererCoverage {
-    private configStore: Config;
+    //private configStore: Config;
     private lcov: LCov;
     private decorator :Decorators;
     constructor( lcov:LCov) {
