@@ -45,8 +45,7 @@ export class CoverageAgent{
     const doc = textEditor.document;
 
     if ("advpl" === doc.languageId ) {
-                    
-        const filePath: string  = doc.uri.fsPath;
+
         let matches = re.exec(doc.fileName.toUpperCase());
         if (matches !== null) {
             for (let tn of this.lCov.TNs) {
@@ -88,10 +87,11 @@ export class CoverageAgent{
   public set newLCov(lCov:coverage.LCov){
 
     console.log("Covered Files:");
-    for(const tn of lCov.TNs){
-      console.log(tn.SF);
+    if (lCov.TNs !== undefined) {
+      for(const tn of lCov.TNs){
+        console.log(tn.SF);
+      }
     }
-    
     this.lCov = lCov;
   }
   private registerCommands(){
@@ -108,7 +108,7 @@ export class CoverageAgent{
   }
 
   public activeAgent(){
-    if(this.active) return;
+    if(this.active || this.lCov.TNs === undefined) return;
     
     this.registerCommands();
 
