@@ -8,6 +8,7 @@ export class CoverageAgent{
   private active:boolean;
   private renderer :RendererCoverage;
   private statusBarItem: vscode.StatusBarItem;
+  private enableCoverageBarItem: vscode.StatusBarItem;
   private disposeActionListener:vscode.Disposable;
   //private statusBarEditorWatcher: vscode.StatusBarItem;
 
@@ -16,6 +17,9 @@ export class CoverageAgent{
     this.active = false;
     this.statusBarItem = vscode.window.createStatusBarItem();
     this.statusBarItem.tooltip = "Show or remove coverage base on Application Server information - LCOV."
+
+    this.enableCoverageBarItem = vscode.window.createStatusBarItem();
+    this.enableCoverageBarItem.tooltip = "Habilita ou desabilita a gera??o de coverage."
   }
 
   public async displayCoverageForActiveFile() {
@@ -102,9 +106,10 @@ export class CoverageAgent{
     const remove = vscode.commands.registerCommand("advpl.unittest.removeCoverage", () => {
       this.removeCoverageForActiveFile();
     });
-
+    
     this.context.subscriptions.push(remove);
     this.context.subscriptions.push(display);
+    this.context.subscriptions.push(this.statusBarItem);
   }
 
   public activeAgent(){
@@ -114,9 +119,7 @@ export class CoverageAgent{
 
     /*Create status bar button */
     this.setDisplayCoverage();
-    this.context.subscriptions.push(this.statusBarItem);
-    this.statusBarItem.show();
-
+        
     this.active = true;
   }
   
@@ -129,11 +132,51 @@ export class CoverageAgent{
     outputChannel.appendLine(`[${Date.now()}][gutters]: Stacktrace ${stackTrace}`);
 
     if (error) {
-        console.error(message.toString());
-        console.error( stackTrace ? stackTrace.toString() : undefined);
+      console.error(message.toString());
+      console.error( stackTrace ? stackTrace.toString() : undefined);
     }
   }
+
+  public enableCoverage() {
+    let enableCoverage = vscode.workspace.getConfiguration("advpl");
+    let booleanEnableCoverage = enableCoverage.get<boolean>("enableCoverage");
+
+    if (booleanEnableCoverage === undefined ) throw new Error("advpl-unittest.ADVPLENABLECOVERAGE not configured");
+    if (!booleanEnableCoverage) {
+      this.statusBarItem.show();
+      this.enableCoverageBarItem.text = "Coverage Enabled .";
+      enableCoverage.update("enableCoverage",  true);
+    }
+    else {
+      this.statusBarItem.hide();
+      this.removeCoverageForActiveFile();
+      enableCoverage.update("enableCoverage", false);
+      this.enableCoverageBarItem.text = "Coverage Disabled.";
+    }
+  }
+
+  public activeCoverageButton(){
+    const enableCoverage = vscode.commands.registerCommand("advpl.unittest.enableCoverage", () => {
+      this.enableCoverage();
+    });
+
+    if (vscode.workspace.getConfiguration("advpl").get<boolean>("enableCoverage")) {
+      this.enableCoverageBarItem.text = "Enabled coverage.";
+    }
+    else {
+      this.enableCoverageBarItem.text = "Disabled coverage.";
+    }
+
+    this.enableCoverageBarItem.show();
+
+    this.enableCoverageBarItem.command = "advpl.unittest.enableCoverage";
+    this.context.subscriptions.push(enableCoverage);
+    this.context.subscriptions.push(this.enableCoverageBarItem);
+    
+  }
 }
+
+
 /* 
 private createWatcher(file:string, renderer:RendererCoverage){
   let pattern = path.join(file);

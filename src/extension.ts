@@ -35,6 +35,7 @@ export function activate(context: vscode.ExtensionContext) {
     const testCommands = new TestCommands();
     const advplTestExplorer = new AdvplTestExplorer(context, testCommands);
     coverageAgent = new CoverageAgent(context);
+    coverageAgent.activeCoverageButton();
 
     vscode.window.registerTreeDataProvider("advplTestExplorer", advplTestExplorer);
     context.subscriptions.push(vscode.commands.registerCommand("advpl-unittest.runTest", (test: TestNode) => {
@@ -52,6 +53,7 @@ export function activate(context: vscode.ExtensionContext) {
         testCommands.runAllTests();
     }));
     consoleAdvpl.writeAdvplConsole("Advpl Unit test initiated!")
+    
 }
 
 // this method is called when your extension is deactivated
@@ -143,13 +145,17 @@ function __internal_run(cSource,editor,testCommands: TestCommands)
             consoleAdvpl.writeAdvplConsole("[Advpl Unit Test] - Finalizado");
             bfinish = true;
         });
-
+        
+        let enableCoverage = vscode.workspace.getConfiguration("advpl");
+        
         testCommands.onNewCoverage((lcov) => {
+            if(enableCoverage.get<boolean>("enableCoverage"))
                 coverageAgent.newLCov = lcov;
                 coverageAgent.activeAgent();
             }
         );
-        testCommands.runTestByName(cSource);   
+        testCommands.runTestByName(cSource);
+        
     
 }
 

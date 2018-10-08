@@ -43,12 +43,9 @@ export class TestCommands {
         if (!testDirectoryPath) throw new Error("advpl-unittest.testDirectoryPath not configured");
         discoverTests(testDirectoryPath)
         .then((result) => {
-
             this.onNewTestDiscoveryEmitter.fire(result.testNames);
-
         })
         .catch((err) => {
-
             this.onNewTestDiscoveryEmitter.fire([]);
         });
     }

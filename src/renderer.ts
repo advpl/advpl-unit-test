@@ -35,9 +35,7 @@ export class RendererCoverage {
     
 
     public removeDecorationsForEditor() {
- 
         this.decorator.decoratorReset();
-      
     }
 
     private setDecorationsForEditor() {
