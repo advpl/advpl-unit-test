@@ -49,8 +49,12 @@
                 "title": "Advpl Unit Test - Show coverage on file."
             },
             {
-                "command": "advpl-unittest.removeCoverage",
+                "command": "advpl.unittest.removeCoverage",
                 "title": "Advpl Unit Test - Remove coverage on file."
+            },
+            {
+                "command": "advpl.unittest.enableCoverage",
+                "title": "Enable or desable coverage system."
             }
         ],
         "keybindings": [
