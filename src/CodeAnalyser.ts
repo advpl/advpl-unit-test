@@ -47,7 +47,7 @@ public getDecorationOptions(methods, document:vscode.TextDocument,hoverHint:stri
 
     if(!(exp===""))
     {
-        var re1 = new RegExp("\\b("+ exp +")\\b","g");
+        var re1 = new RegExp("\\b("+ exp +")\\b","gi");
         var match;
         while(match = re1.exec(content)){
             var startPos = document.positionAt(match.index);
