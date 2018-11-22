@@ -69,9 +69,11 @@ export class CoverageAgent{
     
     try {
 
-      this.disposeActionListener.dispose();
-      this.renderer.removeDecorationsForEditor();
-      this.setDisplayCoverage();
+      if (this.disposeActionListener !== undefined) {
+        this.disposeActionListener.dispose();
+        this.renderer.removeDecorationsForEditor();
+        this.setDisplayCoverage();
+      }
       
     } catch (error) {
       this.handleError(error);
@@ -95,6 +97,12 @@ export class CoverageAgent{
       for(const tn of lCov.TNs){
         console.log(tn.SF);
       }
+    }
+    else {
+      let err:Error;
+      err.message = "Coverage inv?lido";
+      this.handleError(err);
+      return;
     }
     this.lCov = lCov;
   }
