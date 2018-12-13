@@ -1,6 +1,7 @@
 import {RendererCoverage, LinesToDraw} from './renderer';
 import * as vscode from 'vscode';
 import * as coverage from 'coverage';
+import * as path from 'path';
 
 export class CoverageAgent{
   private lCov: coverage.LCov;
@@ -42,23 +43,16 @@ export class CoverageAgent{
     let found:boolean = false;
     let textEditor = vscode.window.activeTextEditor;
     
-    const re = new RegExp(/(\w+.PR\w)/g);
-     
-    // Remove all decorations first to prevent graphical issues
-    
     const doc = textEditor.document;
+    const fileName = path.basename(doc.fileName).toUpperCase();
 
     if ("advpl" === doc.languageId ) {
-
-        let matches = re.exec(doc.fileName.toUpperCase());
-        if (matches !== null) {
-            for (let tn of this.lCov.TNs) {
-                if (tn.SF === matches[0]) {
-                    const lnDw = new LinesToDraw(tn.lines);
-                    this.renderer = new RendererCoverage(textEditor, lnDw);
-                    found = true;                      
-                }               
-            }
+        for (let tn of this.lCov.TNs) {
+            if (tn.SF === fileName) {
+                const lnDw = new LinesToDraw(tn.lines);
+                this.renderer = new RendererCoverage(textEditor, lnDw);
+                found = true;                      
+            }               
         }
     }
 
