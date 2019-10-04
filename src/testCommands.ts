@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { Event, EventEmitter } from "vscode";
 import { discoverTests } from "./testDiscovery";
-import { TestNode } from "./testNode";
+import { TestNode } from "./TestNode";
 import { AdvplRunner } from "./AdvplRunner";
 import { TestResult } from "./TestResult";
 import { RendererCoverage } from "./renderer";

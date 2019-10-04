@@ -35,7 +35,7 @@ public getDecorationOptions(methods, document:vscode.TextDocument,hoverHint:stri
         }
         else
         {
-            if (methods[index].success == success && !methods[index].skiped)
+            if (methods[index].success == success && !methods[index].skiped && !(methods[index].methodname===""))
             {
                 advplExt.writeAdvplConsole("[Advpl Unit Test] Method " + methods[index].methodname +  (success ? " success!":(" FAILED!" + " Message:" +methods[index].message) ));
                 exp += methods[index].methodname + "|";

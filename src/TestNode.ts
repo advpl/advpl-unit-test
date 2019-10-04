@@ -1,4 +1,4 @@
-import { TestResult } from "./testResult";
+import { TestResult } from "./TestResult";
 import { statusImages } from "./constants";
 
 export class TestNode {
