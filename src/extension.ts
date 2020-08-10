@@ -42,6 +42,23 @@ export function activate(context: vscode.ExtensionContext) {
         testCommands.runTest(test);
     }));
     
+    testCommands.onNewResult((res) => {
+        if (res != null)
+        {
+            oTdd.showTestResults(res[0]);       
+        }
+        consoleAdvpl.writeAdvplConsole("[Advpl Unit Test] - Finalizado");
+        bfinish = true;
+    });
+            
+    testCommands.onNewCoverage((lcov) => {
+        let enableCoverage = vscode.workspace.getConfiguration("advpl");
+        if(enableCoverage.get<boolean>("enableCoverage"))
+            coverageAgent.newLCov = lcov;
+            coverageAgent.activeAgent();
+        }
+    );
+
     context.subscriptions.push(unitTest);
     context.subscriptions.push(runUnitTest(testCommands));
 
@@ -133,27 +150,14 @@ function __internal_run(cSource,editor,testCommands: TestCommands)
         });
     
         consoleAdvpl.writeAdvplConsole("-------------------------------------------------------");
-        consoleAdvpl.writeAdvplConsole("----ADVPL Unit Test Running----------------------------");
+        consoleAdvpl.writeAdvplConsole("----Ablon Unit Test Running (TLPP and Advpl)-----------");
         consoleAdvpl.writeAdvplConsole("-------------------------------------------------------");        
         consoleAdvpl.writeAdvplConsole("[Advpl Unit Test] - Iniciando a execução do TestCase:" +  cSource.replace(/^.*[\\\/]/, ''));
         
-        testCommands.onNewResult((res) => {
-            if (res != null)
-            {
-                oTdd.showTestResults(res[0]);       
-            }
-            consoleAdvpl.writeAdvplConsole("[Advpl Unit Test] - Finalizado");
-            bfinish = true;
-        });
         
-        let enableCoverage = vscode.workspace.getConfiguration("advpl");
         
-        testCommands.onNewCoverage((lcov) => {
-            if(enableCoverage.get<boolean>("enableCoverage"))
-                coverageAgent.newLCov = lcov;
-                coverageAgent.activeAgent();
-            }
-        );
+        
+
         testCommands.runTestByName(cSource);
         
     

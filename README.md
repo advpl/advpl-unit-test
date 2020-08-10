@@ -10,6 +10,10 @@ A biblioteca necessaria para executar pode se encontrada aqui.
 
 Por favor favor leia a documentação de como criar os testes unitarios.
 
+## Ablon Unit Test
+
+Está extensão tambem da suporte a biblioteca de teste em TLPP e opensource [Ablon](https://github.com/totvs/ablon-tlpp-unittest).
+Por hora, apenas o suporte de rodar o fonte atual está implementado para ela.
 
 ## Teclas de Atalho padrões
 

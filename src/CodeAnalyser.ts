@@ -29,7 +29,7 @@ public getDecorationOptions(methods, document:vscode.TextDocument,hoverHint:stri
         {
             if (methods[index].skiped)
             {
-                advplExt.writeAdvplConsole("[Advpl Unit Test] Method " + methods[index].methodname + " skipped! Message:" +methods[index].message );
+                advplExt.writeAdvplConsole("[Advpl Unit Test] Test " + methods[index].methodname + " skipped! Message:" +methods[index].message );
                 exp += methods[index].methodname + "|";
             }
         }
@@ -37,7 +37,11 @@ public getDecorationOptions(methods, document:vscode.TextDocument,hoverHint:stri
         {
             if (methods[index].success == success && !methods[index].skiped && !(methods[index].methodname===""))
             {
-                advplExt.writeAdvplConsole("[Advpl Unit Test] Method " + methods[index].methodname +  (success ? " success!":(" FAILED!" + " Message:" +methods[index].message) ));
+                let msg = "[Advpl Unit Test] ";
+                //Method
+                if (methods[index].hasOwnProperty("elapsedTime"))
+                    msg += "[" + methods[index].elapsedTime.toFixed(5) + " ms]"
+                advplExt.writeAdvplConsole(msg +" Test "+ methods[index].methodname +  (success ? " success!":(" FAILED!" + " Message:" +methods[index].message) ));
                 exp += methods[index].methodname + "|";
             }
         }

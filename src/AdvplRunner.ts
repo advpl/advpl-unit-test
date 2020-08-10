@@ -44,11 +44,15 @@ export class AdvplRunner {
     {
         var name = path.basename(source);
         name = name.replace(/\.[^/.]+$/, "");
-            var _args = new Array<string>();
+        let ext = path.extname(source)
+        if (ext.toLocaleLowerCase()===".tlpp")
+            name=path.basename(source);
+        var _args = new Array<string>();
         var that = this;        
         _args.push("--compileInfo=" + this.EnvInfos);
         _args.push("--testcase="+name);
         
+        this._result = "";
         var child = child_process.spawn(this.debugPath,_args);
         child.stdout.on("data",function(data){
       
