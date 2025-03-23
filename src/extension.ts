@@ -54,6 +54,7 @@ export function activate(context: vscode.ExtensionContext) {
     testCommands.onNewCoverage((lcov) => {
         let enableCoverage = vscode.workspace.getConfiguration("advpl");
         if(enableCoverage.get<boolean>("enableCoverage"))
+            coverageAgent.clearAlreadyDisplayedSources();
             coverageAgent.newLCov = lcov;
             coverageAgent.activeAgent();
         }
@@ -126,7 +127,7 @@ function __internal_run(cSource,editor,testCommands: TestCommands)
         bfinish = false;
         
         vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: 'Advpl Test Unit'}, p => {
-            return new Promise((resolve, reject) => {
+            return new Promise<void>((resolve, reject) => {
                 p.report({message: 'Executando...' });
                 let count= 0;
                 let nextFinish = false;

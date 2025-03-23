@@ -11,6 +11,7 @@ export class CoverageAgent{
   private statusBarItem: vscode.StatusBarItem;
   private enableCoverageBarItem: vscode.StatusBarItem;
   private disposeActionListener:vscode.Disposable;
+  private alreadyDisplayed: Array<string>;
   //private statusBarEditorWatcher: vscode.StatusBarItem;
 
   constructor(context: vscode.ExtensionContext){
@@ -20,7 +21,8 @@ export class CoverageAgent{
     this.statusBarItem.tooltip = "Show or remove coverage base on Application Server information - LCOV."
 
     this.enableCoverageBarItem = vscode.window.createStatusBarItem();
-    this.enableCoverageBarItem.tooltip = "Habilita ou desabilita a gera??o de coverage."
+    this.enableCoverageBarItem.tooltip = "Enables or disables the generation of code coverage."
+    this.alreadyDisplayed = [];
   }
 
   public async displayCoverageForActiveFile() {
@@ -51,12 +53,25 @@ export class CoverageAgent{
             if (tn.SF === fileName) {
                 const lnDw = new LinesToDraw(tn.lines);
                 this.renderer = new RendererCoverage(textEditor, lnDw);
-                found = true;                      
+                found = true;
+
+                if (this.alreadyDisplayed.indexOf(fileName) === -1) {
+                  let advplExp = vscode.extensions.getExtension('KillerAll.advpl-vscode').exports;
+                  let sourceSize:number = tn.lines.length;
+                  let coveredLines: number = tn.lines.filter(book => book.hits !== "0").length;
+
+                  advplExp.writeAdvplConsole(`Source ${fileName} has ${sourceSize} lines and ${coveredLines} lines were covered, generating ${((coveredLines/sourceSize)*100).toFixed(2)}% code coverage.`);
+                  this.alreadyDisplayed.push(fileName);
+                }
             }               
         }
     }
 
     return found;
+  }
+
+  public clearAlreadyDisplayedSources(): void {
+    this.alreadyDisplayed = [];
   }
 
   public async removeCoverageForActiveFile() {
@@ -94,7 +109,7 @@ export class CoverageAgent{
     }
     else {
       let err:Error;
-      err.message = "Coverage inv?lido";
+      err.message = "Invalid coverage";
       this.handleError(err);
       return;
     }
