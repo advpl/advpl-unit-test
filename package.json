@@ -2,7 +2,7 @@
     "name": "advpl-unit-test",
     "displayName": "Ablon an Unit Test for TLPP and Advpl ",
     "description": "Suporte a teste unitario em ADVPL e TLPP e VsCode",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "publisher": "KillerAll",
     "extensionDependencies": [
         "KillerAll.advpl-vscode"
