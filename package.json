@@ -2,13 +2,13 @@
     "name": "advpl-unit-test",
     "displayName": "Ablon an Unit Test for TLPP and Advpl ",
     "description": "Suporte a teste unitario em ADVPL e TLPP e VsCode",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "publisher": "KillerAll",
     "extensionDependencies": [
         "KillerAll.advpl-vscode"
     ],
     "engines": {
-        "vscode": "^1.27.2"
+        "vscode": "^1.98.0"
     },
     "categories": [
         "Other"
@@ -111,16 +111,12 @@
     },
     "scripts": {
         "vscode:prepublish": "tsc -p ./",
-        "compile": "tsc -watch -p ./",
-        "postinstall": "node ./node_modules/vscode/bin/install",
-        "test": "node ./node_modules/vscode/bin/test"
+        "compile": "tsc -watch -p ./"
     },
     "devDependencies": {
-        "@types/mocha": "^2.2.32",
-        "@types/node": "^6.0.117",
-        "mocha": "^5.2.0",
-        "typescript": "^2.0.3",
-        "vscode": "^1.1.21"
+        "@types/node": "^14.14.6",
+        "@types/vscode": "^1.98.0",
+        "typescript": "^5.8"
     },
     "repository": {
         "type": "git",
@@ -130,6 +126,6 @@
         "url": "https://github.com/ragssoftwares/advpl-unit-test/issues"
     },
     "dependencies": {
-        "npm": "^6.4.1"
+        "vsce": "^2.15.0"
     }
 }

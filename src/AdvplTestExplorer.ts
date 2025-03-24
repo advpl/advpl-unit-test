@@ -24,7 +24,7 @@ export class AdvplTestExplorer implements TreeDataProvider<TestNode> {
     }
 
     refresh(): void {
-        this._onDidChangeTreeData.fire();
+        this._onDidChangeTreeData.fire(null);
     }
 
     getTreeItem(element: TestNode): vscode.TreeItem {
@@ -33,10 +33,7 @@ export class AdvplTestExplorer implements TreeDataProvider<TestNode> {
             label: element.name,
             collapsibleState: element.isFolder ? vscode.TreeItemCollapsibleState.Expanded : void 0,
             contextValue: element.isFolder ? "folder" : "test",
-            iconPath: element.icon ? {
-                dark: this.context.asAbsolutePath(path.join("resources", "dark", element.icon)),
-                light: this.context.asAbsolutePath(path.join("resources", "light", element.icon)),
-            } : void 0,
+            iconPath: element.icon ? element.icon : void 0,
         };
     }
 
@@ -76,7 +73,7 @@ export class AdvplTestExplorer implements TreeDataProvider<TestNode> {
     private updateWithDiscoveredTests(results: string[]) {
         this.allNodes = [];
         this.discoveredTests = results;
-        this._onDidChangeTreeData.fire();
+        this._onDidChangeTreeData.fire(null);
     }
 
     private updateTreeWithRunningTest(testName: string) {
@@ -112,13 +109,13 @@ export class AdvplTestExplorer implements TreeDataProvider<TestNode> {
             this.testResults = results;
         }
 
-        this._onDidChangeTreeData.fire();
+        this._onDidChangeTreeData.fire(null);
     }
 
     public refreshTestExplorer(): void {
         this.discoveredTests = null;
         this.testResults = null;
-        this._onDidChangeTreeData.fire();
+        this._onDidChangeTreeData.fire(null);
 
         this.testCommands.discoverTests();
     }

@@ -1,10 +1,11 @@
 import { TestResult } from "./TestResult";
 import { statusImages } from "./constants";
+import * as vscode from 'vscode';
 
 export class TestNode {
     private _isError: boolean;
     private _isLoading: boolean;
-    private _icon: string;
+    private _icon: vscode.ThemeIcon;
 
     constructor(private _parentPath: string, private _name: string, testResults: TestResult[], private _children?: TestNode[]) {
         this.setIcon(testResults);
@@ -34,8 +35,8 @@ export class TestNode {
         return !!this._isError;
     }
 
-    public get icon(): string {
-        return (this._isLoading) ? "spinner.svg" : this._icon;
+    public get icon(): vscode.ThemeIcon {
+        return (this._isLoading) ? new vscode.ThemeIcon("loading") : this._icon;
     }
 
     public setAsError(error: string) {
@@ -56,10 +57,10 @@ export class TestNode {
             let resultForTest = testResult[0].methods.filter(m => m.methodname == this.name);
             if (resultForTest.length > 0){
                 if(resultForTest[0].skiped) {
-                    this._icon = statusImages.SKIPPED
+                    this._icon = new vscode.ThemeIcon("testing-skipped-icon");
                 }
                 else { 
-                    this._icon = resultForTest[0].success ? statusImages.PASSED : statusImages.FAILED;
+                    this._icon = resultForTest[0].success ?new vscode.ThemeIcon("testing-passed-icon") : new vscode.ThemeIcon("testing-failed-icon");;
                 }
             }
         }
